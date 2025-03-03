@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "product"
+
+[packages]
+flask = "*"
+python-abc = "*"
+python-dotenv = "*"
+pika = "*"
+sqlalchemy = "*"
+flask-sqlalchemy = "*"
+psycopg2-binary = "*"
+
+pytest = "~=7.2.0"
+pytest-cov = "~=4.0.0"
+pytest-mock = "~=3.10.0"
+pytest-env = "~=0.8.1"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
+python_full_version = "3.11.6"
+
