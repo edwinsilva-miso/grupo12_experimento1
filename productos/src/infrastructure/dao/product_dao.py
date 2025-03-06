@@ -4,8 +4,8 @@ from ..model.product_model import ProductModel
 
 class ProductDAO:
 
-    @staticmethod
-    def save(product: ProductModel) -> str:
+    @classmethod
+    def save(cls, product: ProductModel) -> str:
         session = Session()
         session.add(product)
         session.commit()
@@ -13,22 +13,22 @@ class ProductDAO:
         session.close()
         return product.id
 
-    @staticmethod
-    def find_all() -> list[ProductModel]:
+    @classmethod
+    def find_all(cls) -> list[ProductModel]:
         session = Session()
         products = session.query(ProductModel).all()
         session.close()
         return products
 
-    @staticmethod
-    def find_by_id(product_id: str) -> ProductModel:
+    @classmethod
+    def find_by_id(cls, product_id: str) -> ProductModel:
         session = Session()
         product = session.query(ProductModel).filter(ProductModel.id == product_id).first()
         session.close()
         return product
 
-    @staticmethod
-    def update(product: ProductModel) -> ProductModel:
+    @classmethod
+    def update(cls, product: ProductModel) -> ProductModel:
         session = Session()
         existing = session.query(ProductModel).filter(ProductModel.id == product.id).first()
         if existing:
@@ -38,9 +38,16 @@ class ProductDAO:
         session.close()
         return product
 
-    @staticmethod
-    def delete(product_id: str) -> None:
+    @classmethod
+    def delete(cls, product_id: str) -> None:
         session = Session()
         session.query(ProductModel).filter(ProductModel.id == product_id).delete()
+        session.commit()
+        session.close()
+
+    @classmethod
+    def save_all(cls, to_domain_list: list[ProductModel]) -> None:
+        session = Session()
+        session.add_all(to_domain_list)
         session.commit()
         session.close()

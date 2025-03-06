@@ -15,6 +15,10 @@ class ProductDTORepository(ABC):
         pass
 
     @abstractmethod
+    def save_all(self, products: list[ProductDTO]) -> None:
+        pass
+
+    @abstractmethod
     def update(self, product: ProductDTO) -> ProductDTO:
         pass
 

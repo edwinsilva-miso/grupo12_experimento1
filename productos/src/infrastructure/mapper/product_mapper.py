@@ -33,3 +33,8 @@ class ProductMapper:
     @staticmethod
     def to_dto_list(products: list[ProductModel]) -> list[ProductDTO]:
         return [ProductMapper.to_dto(product) for product in products]
+
+    @staticmethod
+    def from_json_to_dto_list(json: dict) -> list[ProductDTO]:
+        # products = json['products']
+        return [ProductDTO(None, product['name'], product['price']) for product in json]
