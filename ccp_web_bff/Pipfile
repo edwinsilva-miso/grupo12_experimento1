@@ -9,6 +9,9 @@ marshmallow = "*"
 python-abc = "*"
 python-dotenv = "*"
 pika = "*"
+werkzeug = "*"
+redis = "*"
+psutil = "*"
 psycopg2-binary = "*"
 
 

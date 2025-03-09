@@ -1,8 +1,9 @@
 from dotenv import load_dotenv
 from flask import Flask
 
-loaded = load_dotenv('.env.development')
+from .producers.queue_connection import get_connection
 
+loaded = load_dotenv('.env.development')
 
 from .blueprints.products_blueprint import products_blueprint
 
@@ -10,6 +11,8 @@ from .blueprints.products_blueprint import products_blueprint
 def create_app():
     app = Flask(__name__)
     app.register_blueprint(products_blueprint)
+
+    get_connection()
 
     return app
 

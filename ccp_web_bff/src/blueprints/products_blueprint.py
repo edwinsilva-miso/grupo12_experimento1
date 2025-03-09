@@ -15,7 +15,12 @@ def upload_file():
 
     if file and file.filename.endswith('.csv'):
         result = ProcessFile().execute(file)
-        return jsonify(result), 200
+        return jsonify(result), 202
     else:
         return jsonify({"message": "Invalid file format"}), 400
+
+@products_blueprint.route('/status/<process_id>', methods=['GET'])
+def get_status(process_id):
+    res, status = ProcessFile().get_status(process_id)
+    return jsonify(res), status
 

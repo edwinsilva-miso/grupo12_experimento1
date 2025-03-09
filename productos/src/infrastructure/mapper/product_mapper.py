@@ -36,5 +36,5 @@ class ProductMapper:
 
     @staticmethod
     def from_json_to_dto_list(json: dict) -> list[ProductDTO]:
-        # products = json['products']
-        return [ProductDTO(None, product['name'], product['price']) for product in json]
+        products = json['products']
+        return [ProductDTO(None, product['name'], product['price']) for product in products]
