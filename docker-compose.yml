@@ -6,13 +6,39 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - FLASK_ENV=development
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: products
+      RABBITMQ_USER: admin
+      RABBITMQ_PASSWORD: admin
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      PRODUCTS_ROUTING_KEY: products_queue
     depends_on:
       db:
         condition: service_healthy
     networks:
       - product_net
+      - app_net
+
+  ccp_web_bff:
+    build: ccp_web_bff/
+    ports:
+      - "5001:5001"
+    environment:
+      RABBITMQ_USER: admin
+      RABBITMQ_PASSWORD: admin
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      PRODUCTS_ROUTING_KEY: products_queue
+    depends_on:
+      productos:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
       - app_net
 
   db:
@@ -49,9 +75,27 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
 
+  redis:
+    image: redis:7.2-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - app_net
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+
 volumes:
   db_volume:
   rabbitmq_data:
+  redis_data:
 
 networks:
   app_net:

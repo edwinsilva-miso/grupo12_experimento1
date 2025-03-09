@@ -1,23 +1,31 @@
-# Use the official Python image from the Docker Hub
-FROM python:3.11-slim
+FROM python:3.11.6-slim
 
-# Set the working directory in the container
 WORKDIR /app
+
+# Install system dependencies first
+RUN apt-get update && apt-get install -y \
+    gcc \
+    python3-dev \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install pipenv
 RUN pip install --no-cache-dir pipenv
 
-# Copy the Pipfile and Pipfile.lock from the /ccp_web_bff directory to the working directory
-COPY ccp_web_bff/Pipfile ccp_web_bff/Pipfile.lock ./
+# Copy dependency files first for better caching
+COPY Pipfile Pipfile.lock ./
 
-# Install the dependencies
+# Install dependencies
 RUN pipenv install --deploy --ignore-pipfile
 
-# Copy the rest of the application code from the /ccp_web_bff directory to the working directory
-COPY ccp_web_bff/ ./
+# Copy application code
+COPY . .
 
-# Expose the port the app runs on
+# Set the FLASK_APP environment variable
+ENV FLASK_APP=src/main.py
+
+# Expose port
 EXPOSE 5001
 
-# Command to run the application
+# Run the application
 CMD ["pipenv", "run", "flask", "run", "--host=0.0.0.0"]
